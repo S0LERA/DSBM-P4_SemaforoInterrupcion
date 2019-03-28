@@ -68,40 +68,39 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
 	/* USER CODE BEGIN 1 */
-	
+
 	/* USER CODE END 1 */
-	
+
 	/* MCU Configuration--------------------------------------------------------*/
-	
+
 	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
 	HAL_Init();
-	
 	/* USER CODE BEGIN Init */
-	
+
 	/* USER CODE END Init */
-	
+
 	/* Configure the system clock */
 	SystemClock_Config();
-	
+
 	/* USER CODE BEGIN SysInit */
-	
+
 	/* USER CODE END SysInit */
-	
+
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
 	/* USER CODE BEGIN 2 */
-	
+
 	/* USER CODE END 2 */
-	
+
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1)
 	{
 		/* USER CODE END WHILE */
-		HAL_GPIO_WritePin(VerdeC_GPIO_Port, VerdeC_Pin, GPIO_PIN_SET); //Verde Coches
-		HAL_GPIO_WritePin(RojoP_GPIO_Port, RojoP_Pin, GPIO_PIN_SET); //Rojo Peatones
-		EXTI->SWIER=GPIO_PIN_10;
+		HAL_Delay(1000);
+		GPIOB->ODR |= GPIO_ODR_OD6_Msk; //Encender Verde Coches
+		GPIOA->ODR |= GPIO_ODR_OD7_Msk; //Encender Rojo Peatones
 		/* USER CODE BEGIN 3 */
 	}
 	/* USER CODE END 3 */
@@ -115,12 +114,12 @@ void SystemClock_Config(void)
 {
 	RCC_OscInitTypeDef RCC_OscInitStruct = {0};
 	RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-	
-	/** Configure the main internal regulator output voltage 
+
+	/** Configure the main internal regulator output voltage
 	*/
 	__HAL_RCC_PWR_CLK_ENABLE();
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-	/** Initializes the CPU, AHB and APB busses clocks 
+	/** Initializes the CPU, AHB and APB busses clocks
 	*/
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
 	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
@@ -135,7 +134,7 @@ void SystemClock_Config(void)
 	{
 		Error_Handler();
 	}
-	/** Initializes the CPU, AHB and APB busses clocks 
+	/** Initializes the CPU, AHB and APB busses clocks
 	*/
 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
 	|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
@@ -143,7 +142,7 @@ void SystemClock_Config(void)
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-	
+
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
 	{
 		Error_Handler();
@@ -157,13 +156,13 @@ void SystemClock_Config(void)
 */
 static void MX_USART2_UART_Init(void)
 {
-	
+
 	/* USER CODE BEGIN USART2_Init 0 */
-	
+
 	/* USER CODE END USART2_Init 0 */
-	
+
 	/* USER CODE BEGIN USART2_Init 1 */
-	
+
 	/* USER CODE END USART2_Init 1 */
 	huart2.Instance = USART2;
 	huart2.Init.BaudRate = 115200;
@@ -178,9 +177,9 @@ static void MX_USART2_UART_Init(void)
 		Error_Handler();
 	}
 	/* USER CODE BEGIN USART2_Init 2 */
-	
+
 	/* USER CODE END USART2_Init 2 */
-	
+
 }
 
 /**
@@ -191,59 +190,60 @@ static void MX_USART2_UART_Init(void)
 static void MX_GPIO_Init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	
+
 	/* GPIO Ports Clock Enable */
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOH_CLK_ENABLE();
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
-	
+
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, LD2_Pin|VerdeP_Pin|RojoP_Pin|RojoC_Pin, GPIO_PIN_RESET);
-	
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(AmarilloC_GPIO_Port, AmarilloC_Pin, GPIO_PIN_RESET);
-	
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(VerdeC_GPIO_Port, VerdeC_Pin, GPIO_PIN_RESET);
-	
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
 	/*Configure GPIO pin : B1_Pin */
 	GPIO_InitStruct.Pin = B1_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
-	
-	/*Configure GPIO pin : Boton_Pin */
-	GPIO_InitStruct.Pin = Boton_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+
+	/*Configure GPIO pin : LD2_Pin */
+	GPIO_InitStruct.Pin = LD2_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(Boton_GPIO_Port, &GPIO_InitStruct);
-	
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
 	/*Configure GPIO pins : LD2_Pin VerdeP_Pin RojoP_Pin RojoC_Pin */
-	GPIO_InitStruct.Pin = LD2_Pin|VerdeP_Pin|RojoP_Pin|RojoC_Pin;
+	GPIO_InitStruct.Pin = VerdeP_Pin|RojoP_Pin|RojoC_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-	
+
 	/*Configure GPIO pin : AmarilloC_Pin */
 	GPIO_InitStruct.Pin = AmarilloC_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(AmarilloC_GPIO_Port, &GPIO_InitStruct);
-	
+
+	/*Configure GPIO pin : Boton_Pin */
+	GPIO_InitStruct.Pin = Boton_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(Boton_GPIO_Port, &GPIO_InitStruct);
+
 	/*Configure GPIO pin : VerdeC_Pin */
 	GPIO_InitStruct.Pin = VerdeC_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(VerdeC_GPIO_Port, &GPIO_InitStruct);
-	
+
 	/* EXTI interrupt init*/
-	HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-	
+	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
@@ -252,55 +252,49 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	__disable_irq();
 	int modo = 1;
 	int control = 1;
-	int counter_parpadeo=0;
+	int counter_parpadeo = 0;
 	if(GPIO_Pin == GPIO_PIN_10){
-		while (control==1)
-		{
-			switch (modo) {
+		while(control==1){
+			switch(modo){
 				case 1:
-				counter_parpadeo = 0;
-				HAL_Delay(3000);
-				HAL_GPIO_WritePin(VerdeC_GPIO_Port, VerdeC_Pin, GPIO_PIN_RESET); // Apagamos verde coches
-				HAL_GPIO_WritePin(AmarilloC_GPIO_Port, AmarilloC_Pin, GPIO_PIN_SET); //Encendemos amarillo coches
-				HAL_Delay(3000);
-				modo = 2;
+				counter_parpadeo=0;
+				//HAL_Delay(3000);
+				GPIOB->ODR&=~GPIO_ODR_OD6_Msk; //Apagar verde coches
+				GPIOC->ODR |= GPIO_ODR_OD7_Msk; //Encender amarillo coches
+				//HAL_Delay(3000);
+				modo=2;
 				break;
 				case 2:
-				HAL_GPIO_WritePin(AmarilloC_GPIO_Port, AmarilloC_Pin, GPIO_PIN_RESET); //Apagar amarillo coches
-				HAL_GPIO_WritePin(RojoC_GPIO_Port, RojoC_Pin, GPIO_PIN_SET); //Encendemos rojo coches
-				HAL_GPIO_WritePin(RojoP_GPIO_Port, RojoP_Pin, GPIO_PIN_RESET); //Apagamos rojo peatones
-				HAL_GPIO_WritePin(VerdeP_GPIO_Port, VerdeP_Pin, GPIO_PIN_SET); //Encendemos verde peatones
-				HAL_Delay(15000);
-				modo = 3;
+				GPIOC->ODR &=~ GPIO_ODR_OD7_Msk; //Apagar amarillo coches
+				GPIOA->ODR |= GPIO_ODR_OD9_Msk; //Encender rojo coches
+				GPIOA->ODR &=~ GPIO_ODR_OD7_Msk; //Apagamos rojo peatones
+				GPIOA->ODR |= GPIO_ODR_OD6_Msk; //Encender verde peatones
+				//HAL_Delay(15000);
+				modo=3;
 				break;
 				case 3:
 				while(counter_parpadeo<15){
-					HAL_GPIO_WritePin(VerdeP_GPIO_Port, VerdeP_Pin, GPIO_PIN_RESET); //Apagar verde peatones
-					HAL_Delay(100);
-					HAL_GPIO_WritePin(VerdeP_GPIO_Port, VerdeP_Pin, GPIO_PIN_SET); //Encendemos verde peatones
-					HAL_Delay(100);
+					GPIOA->ODR &=~ GPIO_ODR_OD6_Msk; //Apagar verde peatones
+					//HAL_Delay(100);
+					GPIOA->ODR |= GPIO_ODR_OD6_Msk; //Encender verde peatones
+					//HAL_Delay(100);
 					counter_parpadeo++;
 				}
-				modo = 4;
+				modo=4;
 				break;
 				case 4:
-				HAL_GPIO_WritePin(VerdeP_GPIO_Port, VerdeP_Pin, GPIO_PIN_RESET); //Apagar verde peatones
-				HAL_GPIO_WritePin(RojoC_GPIO_Port, RojoC_Pin, GPIO_PIN_RESET); //Apagar rojo coches
-				HAL_GPIO_WritePin(VerdeC_GPIO_Port, VerdeC_Pin, GPIO_PIN_SET); //Verde Coches
-				HAL_GPIO_WritePin(RojoP_GPIO_Port, RojoP_Pin, GPIO_PIN_SET);//Rojo Peatones
-				modo = 1;
-				control = 0;
-				break;
+				GPIOA->ODR &=~ GPIO_ODR_OD6_Msk; //Apagar verde peatones
+				GPIOA->ODR &=~ GPIO_ODR_OD9_Msk; //Apagar rojo coches
+				GPIOB->ODR |= GPIO_ODR_OD6_Msk; //Encendemos verde coches
+				GPIOA->ODR |= GPIO_ODR_OD7_Msk; //Encendemos rojo peatones
+				modo=1;
+				control=0;
 			}
 		}
-		
 	}
-	
 	__enable_irq();
 }
-
 /* USER CODE END 4 */
-
 /**
 * @brief  This function is executed in case of error occurrence.
 * @retval None
@@ -309,7 +303,7 @@ void Error_Handler(void)
 {
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
-	
+
 	/* USER CODE END Error_Handler_Debug */
 }
 
@@ -322,7 +316,7 @@ void Error_Handler(void)
 * @retval None
 */
 void assert_failed(uint8_t *file, uint32_t line)
-{ 
+{
 	/* USER CODE BEGIN 6 */
 	/* User can add his own implementation to report the file name and line number,
 	tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */

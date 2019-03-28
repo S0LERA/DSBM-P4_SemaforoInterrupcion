@@ -60,15 +60,19 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
-#define Boton_Pin GPIO_PIN_0
-#define Boton_GPIO_Port GPIOC
-#define Boton_EXTI_IRQn EXTI0_IRQn
+#define B1_EXTI_IRQn EXTI15_10_IRQn
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
 #define LD2_Pin GPIO_PIN_5
 #define LD2_GPIO_Port GPIOA
+#define TMS_Pin GPIO_PIN_13
+#define TMS_GPIO_Port GPIOA
+#define TCK_Pin GPIO_PIN_14
+#define TCK_GPIO_Port GPIOA
+#define SWO_Pin GPIO_PIN_3
+#define SWO_GPIO_Port GPIOB
 #define VerdeP_Pin GPIO_PIN_6
 #define VerdeP_GPIO_Port GPIOA
 #define RojoP_Pin GPIO_PIN_7
@@ -77,14 +81,11 @@ void Error_Handler(void);
 #define AmarilloC_GPIO_Port GPIOC
 #define RojoC_Pin GPIO_PIN_9
 #define RojoC_GPIO_Port GPIOA
-#define TMS_Pin GPIO_PIN_13
-#define TMS_GPIO_Port GPIOA
-#define TCK_Pin GPIO_PIN_14
-#define TCK_GPIO_Port GPIOA
-#define SWO_Pin GPIO_PIN_3
-#define SWO_GPIO_Port GPIOB
 #define VerdeC_Pin GPIO_PIN_6
 #define VerdeC_GPIO_Port GPIOB
+#define Boton_Pin GPIO_PIN_10
+#define Boton_GPIO_Port GPIOA
+#define Boton_EXTI_IRQn EXTI15_10_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
