@@ -42,6 +42,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+int pulsado = 0;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -68,7 +69,9 @@ static void MX_USART2_UART_Init(void);
 int main(void)
 {
 	/* USER CODE BEGIN 1 */
-
+	int modo = 0;
+	int control = 0;
+	int counter_parpadeo = 0;
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -101,9 +104,53 @@ int main(void)
 		HAL_Delay(1000);
 		GPIOB->ODR |= GPIO_ODR_OD6_Msk; //Encender Verde Coches
 		GPIOA->ODR |= GPIO_ODR_OD7_Msk; //Encender Rojo Peatones
-		/* USER CODE BEGIN 3 */
+		if(pulsado == 1){
+			modo = 1;
+			control = 1;
+			counter_parpadeo = 0;
+			while(control==1){
+				switch(modo){
+					case 1:
+					counter_parpadeo=0;
+					HAL_Delay(3000);
+					GPIOB->ODR&=~GPIO_ODR_OD6_Msk; //Apagar verde coches
+					GPIOC->ODR |= GPIO_ODR_OD7_Msk; //Encender amarillo coches
+					HAL_Delay(3000);
+					modo=2;
+					break;
+					case 2:
+					GPIOC->ODR &=~ GPIO_ODR_OD7_Msk; //Apagar amarillo coches
+					GPIOA->ODR |= GPIO_ODR_OD9_Msk; //Encender rojo coches
+					GPIOA->ODR &=~ GPIO_ODR_OD7_Msk; //Apagamos rojo peatones
+					GPIOA->ODR |= GPIO_ODR_OD6_Msk; //Encender verde peatones
+					HAL_Delay(15000);
+					modo=3;
+					break;
+					case 3:
+					while(counter_parpadeo<15){
+						GPIOA->ODR &=~ GPIO_ODR_OD6_Msk; //Apagar verde peatones
+						HAL_Delay(100);
+						GPIOA->ODR |= GPIO_ODR_OD6_Msk; //Encender verde peatones
+						HAL_Delay(100);
+						counter_parpadeo++;
+					}
+					modo=4;
+					break;
+					case 4:
+					GPIOA->ODR &=~ GPIO_ODR_OD6_Msk; //Apagar verde peatones
+					GPIOA->ODR &=~ GPIO_ODR_OD9_Msk; //Apagar rojo coches
+					GPIOB->ODR |= GPIO_ODR_OD6_Msk; //Encendemos verde coches
+					GPIOA->ODR |= GPIO_ODR_OD7_Msk; //Encendemos rojo peatones
+					modo=1;
+					control=0;
+					pulsado=0;
+					break;
+				}
+			}
+			/* USER CODE BEGIN 3 */
+		}
+		/* USER CODE END 3 */
 	}
-	/* USER CODE END 3 */
 }
 
 /**
@@ -250,48 +297,8 @@ static void MX_GPIO_Init(void)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	__disable_irq();
-	int modo = 1;
-	int control = 1;
-	int counter_parpadeo = 0;
-	if(GPIO_Pin == GPIO_PIN_10){
-		while(control==1){
-			switch(modo){
-				case 1:
-				counter_parpadeo=0;
-				//HAL_Delay(3000);
-				GPIOB->ODR&=~GPIO_ODR_OD6_Msk; //Apagar verde coches
-				GPIOC->ODR |= GPIO_ODR_OD7_Msk; //Encender amarillo coches
-				//HAL_Delay(3000);
-				modo=2;
-				break;
-				case 2:
-				GPIOC->ODR &=~ GPIO_ODR_OD7_Msk; //Apagar amarillo coches
-				GPIOA->ODR |= GPIO_ODR_OD9_Msk; //Encender rojo coches
-				GPIOA->ODR &=~ GPIO_ODR_OD7_Msk; //Apagamos rojo peatones
-				GPIOA->ODR |= GPIO_ODR_OD6_Msk; //Encender verde peatones
-				//HAL_Delay(15000);
-				modo=3;
-				break;
-				case 3:
-				while(counter_parpadeo<15){
-					GPIOA->ODR &=~ GPIO_ODR_OD6_Msk; //Apagar verde peatones
-					//HAL_Delay(100);
-					GPIOA->ODR |= GPIO_ODR_OD6_Msk; //Encender verde peatones
-					//HAL_Delay(100);
-					counter_parpadeo++;
-				}
-				modo=4;
-				break;
-				case 4:
-				GPIOA->ODR &=~ GPIO_ODR_OD6_Msk; //Apagar verde peatones
-				GPIOA->ODR &=~ GPIO_ODR_OD9_Msk; //Apagar rojo coches
-				GPIOB->ODR |= GPIO_ODR_OD6_Msk; //Encendemos verde coches
-				GPIOA->ODR |= GPIO_ODR_OD7_Msk; //Encendemos rojo peatones
-				modo=1;
-				control=0;
-			}
-		}
-	}
+	if(GPIO_Pin == GPIO_PIN_10)
+	pulsado = 1;
 	__enable_irq();
 }
 /* USER CODE END 4 */

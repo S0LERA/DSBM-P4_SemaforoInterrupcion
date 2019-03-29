@@ -202,16 +202,7 @@ void SysTick_Handler(void)
 void EXTI15_10_IRQHandler(void)
 {
 	/* USER CODE BEGIN EXTI15_10_IRQn 0 */
-	/*
-	if(__HAL_GPIO_EXTI_GET_FLAG(GPIO_PIN_13)){
-		if(GPIOA->ODR&GPIO_ODR_OD5_Msk){
-			GPIOA->ODR &=~ GPIO_ODR_OD5_Msk;
-		}else{
-			GPIOA->ODR |= GPIO_ODR_OD5_Msk;
-		}
-		__HAL_GPIO_EXTI_CLEAR_FLAG(GPIO_PIN_13);
-	}
-*/
+
 	/* USER CODE END EXTI15_10_IRQn 0 */
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_10);
 	

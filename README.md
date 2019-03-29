@@ -11,3 +11,7 @@ Ampliación de la práctica 3 para que el sistema funcione por interrupciones.
 
 ### Versión 1.0
 Código del Callback listo (menos los delays)
+
+### Versión 2.0
+Código listo con toda la funcionalidad.
+ - La interrupción funciona ahora con una variable global.
